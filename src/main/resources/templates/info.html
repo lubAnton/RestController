@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns: th="http://www.thymeleaf.com">
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о пользователе</title>
+
+</head>
+<body>
+  <p th:text="${userInfo.getUsername()}"></p>
+  <p th:text="${userInfo.getSurname()}"></p>
+  <p th:text="${userInfo.getAge()}"></p>
+  <p th:text="${userInfo.getPassword()}"></p>
+  <p th:text="${userInfo.roles}"></p>
+
+  <form th:action="@{/logout}" th:method="POST">
+      <input type="submit" value="Logout">
+  </form>
+</body>
+</html>
