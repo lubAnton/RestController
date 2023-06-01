@@ -5,31 +5,34 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.repositories.RoleDao;
+import ru.kata.spring.boot_security.demo.repositories.UserDao;
 
-import java.util.Collections;
+
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+public class UserServiceImpl implements UserDetailsService, UserService {
+    private final UserDao userDao;
+    private final RoleDao roleDao;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public UserServiceImpl(UserDao userDao, RoleDao roleDao) {
+        this.userDao = userDao;
+        this.roleDao = roleDao;
     }
 
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
+        User user = userDao.findUserByName(username);
 
         if (user == null) {
             new UsernameNotFoundException("User is not found");
@@ -39,23 +42,36 @@ public class UserServiceImpl implements UserDetailsService {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<User> getUsers(){
-        return userRepository.findAll();
+        return userDao.getUsers();
     }
+
+    @Override
+    public void save(User user) {
+
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional
     public void editUser (User user) {
-        user.setPassword(loadUserByUsername(user.getUsername()).getPassword());
-        user.setRoles((loadUserByUsername(user.getUsername()).getRoles()));
-            userRepository.save(user);
+        for (Role role: user.getRoles()) {
+            user.setRoles(roleDao.getRolesById(Integer.parseInt(role.getName())));
+        }
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDao.editUser(user);
     }
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public void deleteUser (int id) {
-        if (userRepository.getById(id)!=null)
-        userRepository.deleteById(id);
+        if (userDao.showUser(id)!=null)
+        userDao.deleteUser(id);
     }
+    @Override
     public User getUserInfo (int id) {
-        return userRepository.getById(id);
+        return userDao.showUser(id);
+    }
+    public List<Role> getRoles() {
+        return userDao.getRoles();
     }
     public String getCurrentName() {
         return SecurityContextHolder.getContext().getAuthentication().getName();

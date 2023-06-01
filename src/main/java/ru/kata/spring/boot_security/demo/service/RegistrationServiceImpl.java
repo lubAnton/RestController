@@ -6,38 +6,38 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import java.util.Collections;
+import ru.kata.spring.boot_security.demo.repositories.RoleDao;
+import ru.kata.spring.boot_security.demo.repositories.UserDao;
+
 
 @Service
 public class RegistrationServiceImpl {
-    private final UserRepository userRepository;
+    private final UserDao userDao;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+
+    private final RoleDao roleDao;
+
     @Autowired
-    public RegistrationServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
+    public RegistrationServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder, RoleDao roleDao) {
+        this.userDao = userDao;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
+        this.roleDao = roleDao;
     }
 
     @Transactional
     public void registration(User user) {
-        System.out.println(user.toString());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = new Role("ROLE_USER");
-        user.setRoles(Collections.singleton(role));
-        userRepository.save(user);
+        user.addRole(roleDao.findByName("ROLE_USER"));
+        userDao.save(user);
     }
 
    @Transactional
     public void adminRegistration (User user) {
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = new Role("ROLE_ADMIN");
-        user.setRoles(Collections.singleton(role));
-        userRepository.save(user);
+        user.addRole(roleDao.findByName("ROLE_ADMIN"));
+        user.addRole(roleDao.findByName("ROLE_USER"));
+        userDao.save(user);
     }
 }

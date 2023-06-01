@@ -16,13 +16,13 @@ public class Role implements GrantedAuthority {
     @Column (name = "name")
     private String name;
 
-    @ManyToMany
-    @JoinTable (
-            name = "user_role",
-            joinColumns = @JoinColumn (name = "role_id"),
-            inverseJoinColumns = @JoinColumn (name = "user_id")
-    )
-    private Set<User> users;
+//    @ManyToMany
+//    @JoinTable (
+//            name = "user_role",
+//            joinColumns = @JoinColumn (name = "role_id"),
+//            inverseJoinColumns = @JoinColumn (name = "user_id")
+//    )
+//    private Set<User> users;
 
     public Role() {
     }
@@ -56,13 +56,13 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
+//    public Set<User> getUsers() {
+//        return users;
+//    }
 
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
+//    public void setUsers(Set<User> users) {
+//        this.users = users;
+//    }
 
     @Override
     public boolean equals(Object o) {
@@ -75,7 +75,8 @@ public class Role implements GrantedAuthority {
     @Override
     public String toString() {
         return "Role{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 
