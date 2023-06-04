@@ -26,7 +26,6 @@ public class RoleDaoImpl implements RoleDao{
     @Override
     public Role findByName(String name) {
         Query query = em.createQuery("from Role as role where role.name=:paramName");
-        System.out.println("findByName");
         try {
             return  (Role) query.setParameter("paramName", name).getSingleResult();
         } catch (NoResultException e) {

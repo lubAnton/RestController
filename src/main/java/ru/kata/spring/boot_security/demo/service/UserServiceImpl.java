@@ -11,22 +11,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleDao;
 import ru.kata.spring.boot_security.demo.repositories.UserDao;
-
 
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserDao userDao;
-    private final RoleDao roleDao;
+    private final RoleService roleService;
 
 
     @Autowired
-    public UserServiceImpl(UserDao userDao, RoleDao roleDao) {
+    public UserServiceImpl(UserDao userDao, RoleService roleService) {
         this.userDao = userDao;
-        this.roleDao = roleDao;
+        this.roleService = roleService;
     }
 
 
@@ -45,21 +43,27 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userDao.getUsers();
     }
 
-    @Override
-    public void save(User user) {
 
+    @Transactional
+    public void saveUser(User user) {
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        for (Role role: user.getRoles()) {
+            user.setRoles(roleService.getRolesById(Integer.parseInt(role.getName())));
+        }
+        userDao.save(user);
     }
-
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     @Transactional
     public void editUser (User user) {
         for (Role role: user.getRoles()) {
-            user.setRoles(roleDao.getRolesById(Integer.parseInt(role.getName())));
+            user.setRoles(roleService.getRolesById(Integer.parseInt(role.getName())));
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.editUser(user);
     }
+    @Override
     @Transactional
     @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public void deleteUser (int id) {
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User getUserInfo (int id) {
         return userDao.showUser(id);
     }
+    @Override
     public List<Role> getRoles() {
         return userDao.getRoles();
     }

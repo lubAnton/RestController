@@ -6,11 +6,11 @@
 
 </head>
 <body>
-  <p th:text="${userInfo.getUsername()}"></p>
-  <p th:text="${userInfo.getSurname()}"></p>
-  <p th:text="${userInfo.getAge()}"></p>
-  <p th:text="${userInfo.getPassword()}"></p>
-  <p th:text="${userInfo.roles}"></p>
+  <p th:text="${user.getUsername()}"></p>
+  <p th:text="${user.getSurname()}"></p>
+  <p th:text="${user.getAge()}"></p>
+  <p th:text="${user.getPassword()}"></p>
+  <p th:text="${user.roles}"></p>
 
   <form th:action="@{/logout}" th:method="POST">
       <input type="submit" value="Logout">

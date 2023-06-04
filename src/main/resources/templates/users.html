@@ -24,10 +24,14 @@
 
     <tbody>
         <tr th:each="user: ${users}">
-            <form th:action="@{/update}" method="GET">
+            <form th:action="@{/admin/update}" method="GET">
                 <input type="hidden" name="id" th:value="${user.getId()}"/>
                 <td th:text="${user.getId()}"></td>
-                <td th:text="${user.getUsername()}"></td>
+
+                <td>
+                    <a th:href="@{/admin/users/{id}(id=${user.getId()})}"
+                        th:text="${user.getUsername()}">user</a>
+                </td>
                 <td th:text="${user.getSurname()}"></td>
                 <td th:text="${user.getAge()}"></td>
                 <td th:text="${user.getRoles()}"></td>
@@ -35,7 +39,7 @@
                     <button type="submit">Изменить</button>
                 </td>
             </form>
-            <form th:action="@{/deleteUser}" th:method="post">
+            <form th:action="@{/admin/deleteUser}" th:method="post">
                 <input type="hidden" name="id" th:value="${user.getId()}"/>
                 <input type="hidden" name="_method" th:value="DELETE"/>
                 <td>
@@ -47,7 +51,7 @@
 </table>
 <br/>
 <hr/>
-<a th:href="@{/registration}">
+<a th:href="@{/admin/registration}">
     <button type="button">Добавить пользователя</button>
 
 </a>
