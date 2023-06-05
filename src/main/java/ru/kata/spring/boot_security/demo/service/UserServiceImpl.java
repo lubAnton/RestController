@@ -74,14 +74,4 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User getUserInfo (int id) {
         return userDao.showUser(id);
     }
-    @Override
-    public List<Role> getRoles() {
-        return userDao.getRoles();
-    }
-    public String getCurrentName() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
-    }
-    public int getCurrentId() {
-        return loadUserByUsername(getCurrentName()).getId();
-    }
 }

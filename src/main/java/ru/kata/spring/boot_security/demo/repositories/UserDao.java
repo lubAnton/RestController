@@ -16,6 +16,5 @@ public interface UserDao {
     void editUser(User user);
     void deleteUser(int id);
     User findUserByName (String name);
-    List <Role> getRoles();
 
 }

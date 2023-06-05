@@ -5,11 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleDao;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
@@ -18,12 +17,14 @@ import javax.validation.Valid;
 public class AdminController {
     private final UserService userService;
     private final UserValidator userValidator;
+    private final RoleService roleService;
 
     @Autowired
     public AdminController(UserService userService,
-                           UserValidator userValidator) {
+                           UserValidator userValidator, RoleService roleService) {
         this.userService = userService;
         this.userValidator = userValidator;
+        this.roleService = roleService;
     }
 
     @GetMapping("/login")
@@ -40,7 +41,8 @@ public class AdminController {
 
     @GetMapping("/admin/registration")
     public String adminRegis(@ModelAttribute("user") User user, Model model){
-        model.addAttribute("roles", userService.getRoles());
+        System.out.println(44);
+        model.addAttribute("roles", roleService.getRoles());
         return "registration";
     }
 
@@ -63,7 +65,7 @@ public class AdminController {
     @GetMapping("/admin/update")
     public String edit (Model model, @RequestParam int id) {
         model.addAttribute("user", userService.getUserInfo(id));
-        model.addAttribute("roles", userService.getRoles());
+        model.addAttribute("roles", roleService.getRoles());
         return "changeUser";
     }
     @PostMapping ("admin/update/save")

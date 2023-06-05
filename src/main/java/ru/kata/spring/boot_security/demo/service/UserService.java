@@ -16,6 +16,5 @@ public interface UserService {
     User getUserInfo(int id);
     void editUser(User user);
     void deleteUser(int id);
-    public List<Role> getRoles();
 
 }

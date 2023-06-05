@@ -2,12 +2,14 @@ package ru.kata.spring.boot_security.demo.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 @Repository
@@ -24,15 +26,18 @@ public class RoleDaoImpl implements RoleDao{
         return Collections.singleton(em.find(Role.class, id));
     }
     @Override
-    public Role findByName(String name) {
-        Query query = em.createQuery("from Role as role where role.name=:paramName");
-        try {
-            return  (Role) query.setParameter("paramName", name).getSingleResult();
-        } catch (NoResultException e) {
-            Role role = new Role(name);
-            em.persist(role);
-            em.flush();
-            return role;
+    @Transactional
+    public List<Role> getRoles() {
+        List<Role> roles = em.createQuery("from Role").getResultList();
+        if (roles.size()==0) {
+            Role role = new Role("ROLE_ADMIN");
+            Role role1 = new Role("ROLE_USER");
+            roles.add(role);
+            roles.add(role1);
+                em.persist(role);
+                em.persist(role1);
+                em.flush();
         }
+        return roles;
     }
 }

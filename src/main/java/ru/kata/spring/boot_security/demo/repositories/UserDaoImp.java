@@ -53,8 +53,5 @@ public class UserDaoImp implements UserDao {
             throw new UsernameNotFoundException("Пользователь не найден");
         }
     }
-    @Override
-    public List <Role> getRoles(){
-        return entityManager.createQuery("from Role").getResultList();
-    }
 }
+
