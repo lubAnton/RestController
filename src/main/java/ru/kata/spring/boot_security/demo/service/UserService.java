@@ -16,5 +16,6 @@ public interface UserService {
     User getUserInfo(int id);
     void editUser(User user);
     void deleteUser(int id);
+    User findUserByName(String name);
 
 }

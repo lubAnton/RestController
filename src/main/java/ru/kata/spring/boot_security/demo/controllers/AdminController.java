@@ -5,19 +5,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
-import ru.kata.spring.boot_security.demo.repositories.RoleDao;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 @Controller
 public class AdminController {
     private final UserService userService;
     private final UserValidator userValidator;
     private final RoleService roleService;
+
 
     @Autowired
     public AdminController(UserService userService,
@@ -32,16 +34,8 @@ public class AdminController {
         return "login";
     }
 
-
-    @GetMapping("/admin")
-    public String getUsers(Model model) {
-        model.addAttribute("users", userService.getUsers());
-        return "users";
-    }
-
     @GetMapping("/admin/registration")
     public String adminRegis(@ModelAttribute("user") User user, Model model){
-        System.out.println(44);
         model.addAttribute("roles", roleService.getRoles());
         return "registration";
     }
@@ -54,23 +48,11 @@ public class AdminController {
             return "registration";
         }
         userService.saveUser(user);
-        return "redirect:/login";
+        return "redirect:/admin";
     }
-    @GetMapping("/admin/users/{id}")
-    public String userInfo (@PathVariable ("id") int id, Model model) {
-        model.addAttribute("user", userService.getUserInfo(id));
-        return "info";
-    }
-
-    @GetMapping("/admin/update")
-    public String edit (Model model, @RequestParam int id) {
-        model.addAttribute("user", userService.getUserInfo(id));
-        model.addAttribute("roles", roleService.getRoles());
-        return "changeUser";
-    }
-    @PostMapping ("admin/update/save")
+    @PatchMapping("admin/update/save")
     public String editProcess (@ModelAttribute ("user") User user){
-
+        System.out.println(72);
         userService.editUser(user);
         return "redirect:/admin";
     }
@@ -79,5 +61,15 @@ public class AdminController {
     public String deleteUser (@RequestParam int id) {
         userService.deleteUser(id);
         return "redirect:/admin";
+    }
+
+    @GetMapping("/admin")
+    public String adminPage (Model model, @ModelAttribute ("roll") Role role,
+                                  @ModelAttribute("us") User user, Principal principal) {
+        model.addAttribute("users", userService.getUsers());
+        model.addAttribute("roles", roleService.getRoles());
+
+        model.addAttribute("userPrinc", userService.findUserByName(principal.getName()));
+        return "admin_Page";
     }
 }

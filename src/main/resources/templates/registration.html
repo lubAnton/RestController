@@ -6,10 +6,15 @@
 </head>
 <body>
 <form th:method="POST" th:action="@{/admin/registration}" th:object="${user}">
-  <label for="username">Имя</label>
-  <input type="text" th:field="*{username}" id="username">
+  <label for="username">Почта</label>
+  <input type="email" th:field="*{username}" id="username">
   <div style="color: red" th:if="${#fields.hasErrors('username')}" th:error="*{username}">Name Error</div>
   <br/>
+
+  <label for="name">Имя</label>
+  <input type="text" th:field="*{name}" id="name">
+  </br>
+
   <label for="surname">Фамилия</label>
   <input type="text" th:field="*{surname}" id="surname">
   <br/>

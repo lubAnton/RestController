@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return user;
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public List<User> getUsers(){
         return userDao.getUsers();
     }
@@ -59,17 +59,24 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         for (Role role: user.getRoles()) {
             user.setRoles(roleService.getRolesById(Integer.parseInt(role.getName())));
         }
+        System.out.println(user.toString());
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.editUser(user);
     }
     @Override
     @Transactional
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public void deleteUser (int id) {
         if (userDao.showUser(id)!=null)
         userDao.deleteUser(id);
     }
+
+    @Override
+    public User findUserByName(String name) {
+        return userDao.findUserByName(name);
+    }
+
     @Override
     public User getUserInfo (int id) {
         return userDao.showUser(id);

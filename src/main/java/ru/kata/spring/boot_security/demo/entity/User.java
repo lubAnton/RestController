@@ -18,7 +18,7 @@ public class User implements UserDetails {
     private int id;
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min=2, max=45, message = "Имя должно быть от 2 до 45 символов")
-    @Column (name = "name")
+    @Column (name = "email")
     private String username;
     @Column (name = "surname")
     private String surname;
@@ -26,6 +26,8 @@ public class User implements UserDetails {
     private int age;
     @Column(name = "password")
     private String password;
+    @Column(name = "name")
+    private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable (name = "user_role",
@@ -36,11 +38,12 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String surname, int age, String password) {
+    public User(String username, String surname, int age, String password, String email) {
         this.username = username;
         this.surname = surname;
         this.age = age;
         this.password = password;
+        this.name = email;
     }
 
     public void addRole(Role role) {
@@ -79,6 +82,14 @@ public class User implements UserDetails {
         this.age = age;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String email) {
+        this.name = email;
+    }
+
     @Override
     public String getPassword() {
         return password;
@@ -112,6 +123,7 @@ public class User implements UserDetails {
                 ", surname='" + surname + '\'' +
                 ", age=" + age +
                 ", password='" + password + '\'' +
+                ", email='" + name + '\'' +
                 ", roles=" + roles +
                 '}';
     }
