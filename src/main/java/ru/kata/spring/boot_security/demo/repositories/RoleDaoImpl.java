@@ -6,14 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
-import java.util.Collections;
+import javax.persistence.PersistenceContext;
+
 import java.util.List;
-import java.util.Set;
+
 
 @Repository
 public class RoleDaoImpl implements RoleDao{
+    @PersistenceContext
     private final EntityManager em;
 
     @Autowired
@@ -22,22 +22,21 @@ public class RoleDaoImpl implements RoleDao{
     }
 
     @Override
-    public Set<Role> getRolesById(int id) {
-        return Collections.singleton(em.find(Role.class, id));
-    }
-    @Override
     @Transactional
     public List<Role> getRoles() {
         List<Role> roles = em.createQuery("from Role").getResultList();
-        if (roles.size()==0) {
-            Role role = new Role("ROLE_ADMIN");
-            Role role1 = new Role("ROLE_USER");
-            roles.add(role);
-            roles.add(role1);
-                em.persist(role);
-                em.persist(role1);
-                em.flush();
-        }
         return roles;
+    }
+
+    @Override
+    public void addRole(Role role) {
+        em.persist(role);
+        em.flush();
+    }
+
+    @Override
+    public List<Role> getRolesById(List<Integer> ids) {
+        return em.createQuery("SELECT DISTINCT r FROM Role r WHERE r.id IN :ids", Role.class)
+                .setParameter("ids", ids).getResultList();
     }
 }

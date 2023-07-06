@@ -13,8 +13,10 @@ import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
     private final UserValidator userValidator;
@@ -29,46 +31,39 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/login")
-    public String loginPage () {
-        return "login";
-    }
 
-    @GetMapping("/admin/registration")
-    public String adminRegis(@ModelAttribute("user") User user, Model model){
-        model.addAttribute("roles", roleService.getRoles());
-        return "registration";
-    }
+    @PostMapping("/registration")
+    public String saveUser(User user,
+                           BindingResult bindingResult,
+                           @RequestParam("newUserRolesId") List<Integer> rolesId) {
 
-    @PostMapping("/admin/registration")
-    public String adminRegisProcess(@ModelAttribute ("user") @Valid User user,
-                                    BindingResult bindingResult, Model model) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
             return "registration";
         }
+        user.setRoles(roleService.getRolesById(rolesId));
         userService.saveUser(user);
         return "redirect:/admin";
     }
-    @PatchMapping("admin/update/save")
-    public String editProcess (@ModelAttribute ("user") User user){
-        System.out.println(72);
+
+    @PatchMapping("/update/save")
+    public String editUser(User user, @RequestParam("rolesEditUser") List<Integer> rolesId) {
+        user.setRoles(roleService.getRolesById(rolesId));
         userService.editUser(user);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/admin/deleteUser")
-    public String deleteUser (@RequestParam int id) {
+    @DeleteMapping("/deleteUser")
+    public String deleteUser(@RequestParam int id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin")
-    public String adminPage (Model model, @ModelAttribute ("roll") Role role,
-                                  @ModelAttribute("us") User user, Principal principal) {
+    @GetMapping
+    public String adminPage(Model model, @ModelAttribute("roll") Role role,
+                            @ModelAttribute("us") User user, Principal principal) {
         model.addAttribute("users", userService.getUsers());
         model.addAttribute("roles", roleService.getRoles());
-
         model.addAttribute("userPrinc", userService.findUserByName(principal.getName()));
         return "admin_Page";
     }

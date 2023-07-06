@@ -10,40 +10,40 @@ import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
-@Table (name = "t_users")
+@Table(name = "t_users")
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
     @NotEmpty(message = "Имя не должно быть пустым")
-    @Size(min=2, max=45, message = "Имя должно быть от 2 до 45 символов")
-    @Column (name = "email")
+    @Size(min = 2, max = 45, message = "Имя должно быть от 2 до 45 символов")
+    @Column(name = "email")
     private String username;
-    @Column (name = "surname")
+    @Column(name = "surname")
     private String surname;
-    @Column (name = "age")
+    @Column(name = "age")
     private int age;
     @Column(name = "password")
     private String password;
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable (name = "user_role",
-            joinColumns = @JoinColumn (name = "user_id"),
-            inverseJoinColumns = @JoinColumn (name = "role_id"))
-    private Set<Role> roles=new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+
+    private List<Role> roles = new ArrayList<>();
 
     public User() {
     }
 
-    public User(String username, String surname, int age, String password, String email) {
+    public User(String username, String surname, int age, String name) {
         this.username = username;
         this.surname = surname;
         this.age = age;
-        this.password = password;
-        this.name = email;
+        this.name = name;
     }
 
     public void addRole(Role role) {
@@ -98,11 +98,12 @@ public class User implements UserDetails {
     public void setPassword(String password) {
         this.password = password;
     }
-    public Set<Role> getRoles() {
+
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
@@ -123,7 +124,7 @@ public class User implements UserDetails {
                 ", surname='" + surname + '\'' +
                 ", age=" + age +
                 ", password='" + password + '\'' +
-                ", email='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", roles=" + roles +
                 '}';
     }

@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.repositories;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
-import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 
 
@@ -15,6 +14,8 @@ public class UserDaoImp implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+
 
     @Override
     public List<User> getUsers() {
@@ -40,14 +41,16 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void deleteUser(int id) {
+//        Query query = entityManager.createQuery("delete User us where us.id=:paramId");
+//        query.setParameter("paramId", id);
+//        query.executeUpdate();
         entityManager.remove(showUser(id));
-        entityManager.flush();
     }
 
     @Override
     public User findUserByName(String name) {
         try {
-            Query query = entityManager.createQuery("from User where username=:paramName");
+            Query query = entityManager.createQuery("select u from User u join fetch u.roles where u.username=:paramName", User.class);
             return (User) query.setParameter("paramName", name).getSingleResult();
         } catch (NoResultException e) {
             throw new UsernameNotFoundException("Пользователь не найден");

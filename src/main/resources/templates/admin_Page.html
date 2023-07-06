@@ -140,7 +140,7 @@
                                 <label class="container-fluid "
                                        for="rolesUp">Role</label>
                                 <select id="rolesUp" class="form-select col-md-5"
-                                        th:value="${user.roles}" name="roles" required="required"
+                                        th:value="${user.roles}" name="rolesEditUser" required="required"
                                         multiple="" size="2">
                                   <option value="1">ADMIN</option>
                                   <option value="2">USER</option>
@@ -271,6 +271,8 @@
                   <label for="username" class="col-form-label">Email</label>
                   <input type="email" name="username"
                          class="form-control" id="username"/>
+                  <div style="color: red" th:if="${#fields.hasErrors('username')}"
+                  th:errors="*{username}">Имя существует</div>
                 </div>
 
 
@@ -283,7 +285,7 @@
                 <div class="mb-3">
                   <label class="container-fluid " for="rolesNew">Role</label>
                   <select id="rolesNew" class="form-select col-md-5"
-                          name="roles" multiple="" size="2">
+                          name="newUserRolesId" multiple="" size="2">
                     <option value="1">ADMIN</option>
                     <option selected= "selected" value="2">USER</option>
                   </select>

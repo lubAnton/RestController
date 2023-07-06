@@ -19,10 +19,6 @@ public class Role implements GrantedAuthority {
     public Role() {
     }
 
-    public Role(int id) {
-        this.id = id;
-    }
-
     public Role(String name) {
         this.name = name;
     }
@@ -58,10 +54,7 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        if (name.contains("ADMIN"))
-            return "ADMIN";
-        else
-        return "USER";
+        return name.substring(5);
     }
 
     @Override

@@ -17,7 +17,6 @@ public class UserValidator implements Validator {
     private final UserServiceImpl userService;
     private final UserDao userDao;
 
-    @Autowired
     public UserValidator(UserServiceImpl userService, UserDao userDao) {
         this.userService = userService;
         this.userDao = userDao;
