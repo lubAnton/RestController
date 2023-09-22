@@ -1,8 +1,5 @@
 package ru.kata.spring.boot_security.demo.InitDB;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.entity.Role;
@@ -11,10 +8,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
 
 @Component
 public class Init {
@@ -42,12 +35,6 @@ public class Init {
             userService.saveUser(user);
         }
 
-//
-//        try {
-//            userService.findUserByName(user.getUsername());
-//        } catch (UsernameNotFoundException e) {
-//            userService.saveUser(user);
-//        }
 
     }
 }

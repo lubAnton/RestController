@@ -17,6 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
+@CrossOrigin
 public class AdminController {
     private final UserService userService;
     private final UserValidator userValidator;

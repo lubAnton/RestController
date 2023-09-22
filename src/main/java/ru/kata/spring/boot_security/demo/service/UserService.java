@@ -4,6 +4,7 @@ package ru.kata.spring.boot_security.demo.service;
 
 
 
+import ru.kata.spring.boot_security.demo.DTO.UserDTO;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 
@@ -17,5 +18,6 @@ public interface UserService {
     void editUser(User user);
     void deleteUser(int id);
     User findUserByName(String name);
+    User converToUser (UserDTO userDTO);
 
 }

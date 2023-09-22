@@ -7,8 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @SpringBootApplication
 public class SpringBootSecurityDemoApplication {

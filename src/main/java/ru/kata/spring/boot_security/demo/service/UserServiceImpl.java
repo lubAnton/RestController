@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.DTO.UserDTO;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repositories.UserDao;
@@ -74,5 +76,13 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public User getUserInfo (int id) {
         return userDao.showUser(id);
+    }
+    @Override
+    @Transactional
+    public User converToUser(UserDTO userDTO) {
+        System.out.println("asegkjbgse");
+        ModelMapper md = new ModelMapper();
+        System.out.println(md+"asg");
+        return md.map(userDTO, User.class);
     }
 }
