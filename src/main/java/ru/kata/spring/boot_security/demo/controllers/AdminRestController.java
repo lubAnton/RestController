@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.DTO.UserDTO;
@@ -41,24 +40,21 @@ public class AdminRestController {
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<HttpStatus> saveUser(@RequestBody User user, BindingResult bindingResult) {
-//        userValidator.validate(userDTO, bindingResult);
-//        if (bindingResult.hasErrors()) {
-//            System.out.println("нужно обработать ошибку");
-//        }
-        userService.saveUser(user);
+    public ResponseEntity<HttpStatus> saveUser(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        userValidator.validate(userService.converToUser(userDTO), bindingResult);
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.ok(HttpStatus.BAD_GATEWAY);
+        } else {
+            userService.saveUser(userService.converToUser(userDTO));
+        }
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<HttpStatus> updateUser(@RequestBody User user, BindingResult bindingResult,
                                                  @PathVariable("id") int id) {
-        //userValidator.validate(user, bindingResult);
-//        if (bindingResult.hasErrors()) {
-//            System.out.println("нужно обработать ошибку");
-//        }
-        userService.editUser(user);
-        return ResponseEntity.ok(HttpStatus.OK);
+            userService.editUser(user);
+            return ResponseEntity.ok(HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id){

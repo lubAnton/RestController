@@ -1,36 +1,31 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.DTO.UserDTO;
-import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.repositories.UserDao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
     private final UserDao userDao;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
 
 
-    public UserServiceImpl(UserDao userDao, RoleService roleService) {
+    public UserServiceImpl(UserDao userDao, RoleService roleService, @Lazy PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
@@ -57,8 +52,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Transactional
     public void editUser (User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userDao.editUser(user);
+        if (!getUserInfo(user.getId()).getPassword().equals(user.getPassword())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+       userDao.editUser(user);
     }
     @Override
     @Transactional
@@ -80,9 +77,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     @Transactional
     public User converToUser(UserDTO userDTO) {
-        System.out.println("asegkjbgse");
         ModelMapper md = new ModelMapper();
-        System.out.println(md+"asg");
         return md.map(userDTO, User.class);
     }
 }

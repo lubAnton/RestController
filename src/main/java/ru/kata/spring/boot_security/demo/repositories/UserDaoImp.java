@@ -35,6 +35,7 @@ public class UserDaoImp implements UserDao {
 
     @Override
     public void editUser(User user) {
+
         entityManager.merge(user);
         entityManager.flush();
     }

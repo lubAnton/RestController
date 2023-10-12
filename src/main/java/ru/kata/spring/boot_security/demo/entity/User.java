@@ -18,7 +18,7 @@ public class User implements UserDetails {
     private int id;
     @NotEmpty(message = "Имя не должно быть пустым")
     @Size(min = 2, max = 45, message = "Имя должно быть от 2 до 45 символов")
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String username;
     @Column(name = "surname")
     private String surname;
