@@ -30,15 +30,17 @@ public class AdminRestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers(){
+    public ResponseEntity<List<User>> getUsers() {
         List<User> users = userService.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<User>  getUser(@PathVariable("id") int id) {
+    public ResponseEntity<User> getUser(@PathVariable("id") int id) {
         User user = userService.getUserInfo(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<HttpStatus> saveUser(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
         userValidator.validate(userService.converToUser(userDTO), bindingResult);
@@ -51,16 +53,17 @@ public class AdminRestController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user, BindingResult bindingResult,
-                                                 @PathVariable("id") int id) {
-            userService.editUser(user);
-            return ResponseEntity.ok(HttpStatus.OK);
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user) {
+        userService.editUser(user);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id){
+    public ResponseEntity<HttpStatus> deleteUser(@PathVariable("id") int id) {
         userService.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
     @GetMapping(path = "/api/auth", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> getAuthUser(@CurrentSecurityContext(expression = "authentication") Principal principal) {
         User user = userService.findUserByName(principal.getName());

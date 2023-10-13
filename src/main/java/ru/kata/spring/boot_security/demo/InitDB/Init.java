@@ -22,13 +22,12 @@ public class Init {
 
 
     @PostConstruct
-    @Transactional
     protected void initDB() {
         if (roleService.getRoles().size() == 0) {
             roleService.addRole(new Role("ROLE_ADMIN"));
             roleService.addRole(new Role("ROLE_USER"));
         }
-        if (userService.getUsers().size()==0){
+        if (userService.getUsers().size() == 0) {
             User user = new User("try@mail.ru", "Ivanov", 33, "Andrey");
             user.setPassword("123");
             user.setRoles(roleService.getRoles());

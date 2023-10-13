@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-
     public UserServiceImpl(UserDao userDao, RoleService roleService, @Lazy PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
         this.roleService = roleService;
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return user;
     }
 
-    public List<User> getUsers(){
+    public List<User> getUsers() {
         return userDao.getUsers();
     }
 
@@ -51,16 +50,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Transactional
-    public void editUser (User user) {
+    public void editUser(User user) {
         if (!getUserInfo(user.getId()).getPassword().equals(user.getPassword())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-       userDao.editUser(user);
+        userDao.editUser(user);
     }
+
     @Override
     @Transactional
-    public void deleteUser (int id) {
-        if (userDao.showUser(id)!=null) {
+    public void deleteUser(int id) {
+        if (userDao.showUser(id) != null) {
             userDao.deleteUser(id);
         }
     }
@@ -71,9 +71,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public User getUserInfo (int id) {
+    public User getUserInfo(int id) {
         return userDao.showUser(id);
     }
+
     @Override
     @Transactional
     public User converToUser(UserDTO userDTO) {

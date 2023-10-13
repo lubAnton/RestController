@@ -12,17 +12,16 @@ import java.util.List;
 
 
 @Repository
-public class RoleDaoImpl implements RoleDao{
+public class RoleDaoImpl implements RoleDao {
     @PersistenceContext
     private final EntityManager em;
 
-    @Autowired
+
     public RoleDaoImpl(EntityManager em) {
         this.em = em;
     }
 
     @Override
-    @Transactional
     public List<Role> getRoles() {
         List<Role> roles = em.createQuery("from Role").getResultList();
         return roles;
